@@ -2,3 +2,5 @@
 /logs
 src/services/DB/logs
 src/services/logs
+/coverage
+/tests/service/html-report/jest-html-reporters-attach
