@@ -57,7 +57,8 @@ pipelines:
                 command: ls
                 run_if: passed
     - code-inspection:
-        fetch_materials: true
+        #esto se cambio a false
+        fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
         approval:
@@ -85,8 +86,9 @@ pipelines:
             - docker
             tasks:
             - fetch:
-                is_file: true
-                source: docker-compose-ap.yaml
+                is_file: false
+                #esto se cambio
+                source: ./
                 stage: Test
                 job: unit-test
                 run_if: passed
