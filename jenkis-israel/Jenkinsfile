@@ -81,14 +81,7 @@ pipeline {
         always{
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
-            emailext (
-                subject: "pipeline result",
-                body: '''
-                    <p>El pipeline was finished.</p>
-                ''',
-                to: 'izg.elt@gmail.com',
-                attachLog: true
-            )
+            emailext (attachLog: true, body: 'test', subject: 'test', to: 'izg.elt@gmail.com')
         }
     }
 
