@@ -34,7 +34,6 @@ pipelines:
             tasks:
             - script: |
                 git rev-parse --short HEAD > gitHash.txt
-                export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 npm install
                 npm test
             artifacts:
