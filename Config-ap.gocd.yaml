@@ -213,4 +213,3 @@ pipelines:
                 export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 export TAG_VERSION=${GIT_COMMIT_HASH} 
                 DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-ap.yaml up -d
-              run_if: passed   
