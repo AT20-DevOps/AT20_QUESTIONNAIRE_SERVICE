@@ -89,7 +89,7 @@ pipeline {
                     <p>Log on the console:</p>
                     <pre>${BUILD_LOG_MULTILINE}</pre>
                 ''',
-                recipients: 'izg.elt@gmail.com',
+                to: 'izg.elt@gmail.com',
                 attachLog: true
             )
         }
