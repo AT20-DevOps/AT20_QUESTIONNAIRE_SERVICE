@@ -82,11 +82,11 @@ pipeline {
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
             emailext (
-                subject: "Resultado del pipeline",
+                subject: "pipeline result",
                 body: '''
-                    <p>El pipeline ha finalizado.</p>
-                    <p>Estado: ${currentBuild.result}</p>
-                    <p>Log de la consola:</p>
+                    <p>El pipeline was finished.</p>
+                    <p>State: ${currentBuild.result}</p>
+                    <p>Log on the console:</p>
                     <pre>${BUILD_LOG_MULTILINE}</pre>
                 ''',
                 recipients: 'izg.elt@gmail.com',
