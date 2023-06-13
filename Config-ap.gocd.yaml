@@ -188,6 +188,9 @@ pipelines:
       Config-ap:
         pipeline: Config-ap
         stage: PackageAndPublish
+      Acceptance:
+        pipeline: Acceptance
+        stage: Smoke
     stages:
     - DeployToAuto:
         fetch_materials: false
