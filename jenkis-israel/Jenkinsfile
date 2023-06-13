@@ -87,7 +87,7 @@ pipeline {
                     <p>El pipeline was finished.</p>
                     <p>State: ${currentBuild.result}</p>
                     <p>Log on the console:</p>
-                    <pre>${BUILD_LOG_MULTILINE}</pre>
+                    <pre>${BUILD_LOG}</pre>
                 ''',
                 to: 'izg.elt@gmail.com',
                 attachLog: true
