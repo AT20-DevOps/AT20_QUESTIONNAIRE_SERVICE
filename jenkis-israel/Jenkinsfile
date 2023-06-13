@@ -64,16 +64,14 @@ pipeline {
         }
         stage('DeployToDev'){
             steps{
-                sh 'ls -la'
-                sh 'cat docker-compose-israel.yaml'
-                sh 'export TAG_VERSION=${TAG_VERSION} && docker-compose -f docker-compose-israel.yaml up -d'
+                sh 'export TAG_VERSION=${TAG_VERSION} && echo docker-compose -f docker-compose-israel.yaml up -d'
                 sh 'echo command to run smoke test'
             }
         }
 
         stage('DeployToAuto'){
             steps{
-                sh 'export TAG_VERSION=${TAG_VERSION} && DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-israel.yaml up -d'
+                sh 'export TAG_VERSION=${TAG_VERSION} && echo DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-israel.yaml up -d'
                 sh 'echo command to run automation test'
             }
         }
@@ -83,6 +81,19 @@ pipeline {
         always{
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
+        }
+        always {
+            emailext (
+                subject: "Resultado del pipeline",
+                body: '''
+                    <p>El pipeline ha finalizado.</p>
+                    <p>Estado: ${currentBuild.result}</p>
+                    <p>Log de la consola:</p>
+                    <pre>${BUILD_LOG_MULTILINE}</pre>
+                ''',
+                recipients: 'izg.elt@gmail.com',
+                attachLog: true
+            )
         }
     }
 
