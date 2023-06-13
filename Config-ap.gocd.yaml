@@ -55,7 +55,7 @@ pipelines:
                   SMTP_HOST: smtp.gmail.com
                   SMTP_PORT: 587
                   SMTP_USERNAME: entre21ja07@gmail.com
-                  SMTP_PASSWORD: MaxKaiser2012
+                  SMTP_PASSWORD: wuxfvrxbumvszcys
                   SMTP_USE_SSL: true
                   SMTP_STARTTLS_ENABLE: true
                   FROM: entre21ja07@gmail.com
