@@ -57,7 +57,6 @@ pipelines:
                 command: ls
                 run_if: passed
     - code-inspection:
-        #esto se cambio a false
         fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
@@ -87,7 +86,6 @@ pipelines:
             tasks:
             - fetch:
                 is_file: false
-                #esto se cambio
                 source: ./
                 stage: Test
                 job: unit-test
