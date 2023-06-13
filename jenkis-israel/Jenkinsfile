@@ -78,38 +78,35 @@ pipeline {
     }
 
     post{
-always {
-    sh 'docker image prune -a -f'
-    sh 'docker system prune -a -f'
+        always {
+            sh 'docker image prune -a -f'
+            sh 'docker system prune -a -f'
 
-    def buildResult = currentBuild.result ?: 'UNKNOWN'
-    def subject = "Jenkins Result - ${BRANCH_NAME} branch - ${buildResult}"
 
-    emailext (
-        subject: subject,
-        body: '''<html>
-            <body>
-                <h2>CI was finished with the following details:</h2>
-                <p>Status: ${buildResult}</p>
-                <p>Console log is attached in this email.</p>
-                <h3>Additional Details:</h3>
-                <ul>
-                    <li>Job Name: ${env.JOB_NAME}</li>
-                    <li>Build Number: ${env.BUILD_NUMBER}</li>
-                    <li>Build URL: ${env.BUILD_URL}</li>
-                    <li>Git Branch: ${env.BRANCH_NAME}</li>
-                    <li>Build Timestamp: ${env.BUILD_TIMESTAMP}</li>
-                    <li>Executor Number: ${env.EXECUTOR_NUMBER}</li>
-                </ul>
-                <p>Best regards!</p>
-            </body>
-        </html>''',
-        mimeType: 'text/html',
-        to: 'izg.elt@gmail.com',
-        attachLog: true
-    )
-}
-
+            emailext (
+                subject: "Jenkins Result - ${BRANCH_NAME} branch - ${buildResult}",
+                body: """<html>
+                    <body>
+                        <h2>CI was finished with the following details:</h2>
+                        <p>Status: ${buildResult}</p>
+                        <p>Console log is attached in this email.</p>
+                        <h3>Additional Details:</h3>
+                        <ul>
+                            <li>Job Name: ${env.JOB_NAME}</li>
+                            <li>Build Number: ${env.BUILD_NUMBER}</li>
+                            <li>Build URL: ${env.BUILD_URL}</li>
+                            <li>Git Branch: ${env.BRANCH_NAME}</li>
+                            <li>Build Timestamp: ${env.BUILD_TIMESTAMP}</li>
+                            <li>Executor Number: ${env.EXECUTOR_NUMBER}</li>
+                        </ul>
+                        <p>Best regards!</p>
+                    </body>
+                </html>""",
+                mimeType: 'text/html',
+                to: 'izg.elt@gmail.com',
+                attachLog: true
+            )
+        }
 
     }
 
