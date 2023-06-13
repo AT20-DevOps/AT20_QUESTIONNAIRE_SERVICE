@@ -156,6 +156,12 @@ pipelines:
             tasks:
             - script: |
                 echo command to run smoke test
+                echo "Smoke test succeeded" > result.txt
+                cat result.txt
+            artifacts:
+            - build: 
+                source: result.txt
+
   Capacity_testing:
     group: AT20Group
     label_template: ${COUNT}
@@ -196,7 +202,15 @@ pipelines:
                 source: docker-compose-ap.yaml
                 is_file: true
                 run_if: passed
+            - fetch:
+                pipeline: Acceptance
+                stage: Smoke
+                job: test
+                source: result.txt
+                is_file: true
+                run_if: passed
             - script: |
                 export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 export TAG_VERSION=${GIT_COMMIT_HASH} 
                 DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-ap.yaml up -d
+              run_if: passed   
