@@ -54,12 +54,12 @@ pipelines:
                 configuration:
                   SMTP_HOST: smtp.gmail.com
                   SMTP_PORT: 587
-                  SMTP_USERNAME: tu_direccion_de_correo@gmail.com
-                  SMTP_PASSWORD: tu_contraseña_de_gmail
+                  SMTP_USERNAME: entre21ja07@gmail.com
+                  SMTP_PASSWORD: MaxKaiser2012
                   SMTP_USE_SSL: true
                   SMTP_STARTTLS_ENABLE: true
-                  FROM: tu_direccion_de_correo@gmail.com
-                  TO: destinatario@example.com
+                  FROM: entre21ja07@gmail.com
+                  TO: entre21ja07@gmail.com
                   SUBJECT: "[GoCD] Estado de la canalización: ${pipeline.name}"
           code-coverage:
             timeout: 0
