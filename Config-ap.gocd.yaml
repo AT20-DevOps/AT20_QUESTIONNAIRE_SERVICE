@@ -126,7 +126,7 @@ pipelines:
             - docker
             tasks:
             - fetch:
-                pipeline: Test1
+                pipeline: Config-ap
                 stage: Test
                 job: unit-test
                 source: gitHash.txt
