@@ -16,7 +16,7 @@ pipelines:
         username: Adalid-Perez
         shallow_clone: false
         auto_update: true
-        branch: task-14_AP
+        branch: task-15_AP
         encrypted_password: AES:yv+jiQLZTyJ6AhZPplc+yQ==:YC20C5bVY0+kDA00tjIeDA==
     stages:
     - Test:
@@ -47,6 +47,20 @@ pipelines:
                 source: gitHash.txt
             - build:
                 source: docker-compose-ap.yaml 
+            notifications:
+            - plugin:
+                id: mail-notifier
+                version: 1.0
+                configuration:
+                  SMTP_HOST: smtp.gmail.com
+                  SMTP_PORT: 587
+                  SMTP_USERNAME: tu_direccion_de_correo@gmail.com
+                  SMTP_PASSWORD: tu_contraseña_de_gmail
+                  SMTP_USE_SSL: true
+                  SMTP_STARTTLS_ENABLE: true
+                  FROM: tu_direccion_de_correo@gmail.com
+                  TO: destinatario@example.com
+                  SUBJECT: "[GoCD] Estado de la canalización: ${pipeline.name}"
           code-coverage:
             timeout: 0
             tasks:
