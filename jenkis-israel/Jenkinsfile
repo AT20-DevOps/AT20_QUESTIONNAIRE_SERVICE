@@ -85,9 +85,6 @@ pipeline {
                 subject: "pipeline result",
                 body: '''
                     <p>El pipeline was finished.</p>
-                    <p>State: ${currentBuild.result}</p>
-                    <p>Log on the console:</p>
-                    <pre>${BUILD_LOG}</pre>
                 ''',
                 to: 'izg.elt@gmail.com',
                 attachLog: true
