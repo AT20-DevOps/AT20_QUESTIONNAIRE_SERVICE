@@ -81,8 +81,6 @@ pipeline {
         always{
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
-        }
-        always {
             emailext (
                 subject: "Resultado del pipeline",
                 body: '''
