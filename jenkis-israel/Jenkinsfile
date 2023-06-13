@@ -81,14 +81,12 @@ pipeline {
         always {
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
-
-
-            emailext (
-                subject: "Jenkins Result - ${BRANCH_NAME} branch - ${buildResult}",
+            emailext(
+                subject: "Jenkins Result - ${BRANCH_NAME} branch - ${currentBuild.result}",
                 body: """<html>
                     <body>
                         <h2>CI was finished with the following details:</h2>
-                        <p>Status: ${buildResult}</p>
+                        <p>Status: ${currentBuild.result}</p>
                         <p>Console log is attached in this email.</p>
                         <h3>Additional Details:</h3>
                         <ul>
