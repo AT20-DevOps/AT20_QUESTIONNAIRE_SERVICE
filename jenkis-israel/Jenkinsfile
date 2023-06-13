@@ -64,14 +64,14 @@ pipeline {
         }
         stage('DeployToDev'){
             steps{
-                sh 'export TAG_VERSION=${TAG_VERSION} && echo docker-compose -f docker-compose-israel.yaml up -d'
+                sh 'export TAG_VERSION=${TAG_VERSION} && docker-compose -f docker-compose-israel.yaml up -d'
                 sh 'echo command to run smoke test'
             }
         }
 
         stage('DeployToAuto'){
             steps{
-                sh 'export TAG_VERSION=${TAG_VERSION} && echo DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-israel.yaml up -d'
+                sh 'export TAG_VERSION=${TAG_VERSION} && DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-israel.yaml up -d'
                 sh 'echo command to run automation test'
             }
         }
@@ -85,18 +85,14 @@ pipeline {
                 subject: "Jenkins Result - ${BRANCH_NAME} branch - ${currentBuild.result}",
                 body: """<html>
                     <body>
-                        <h2>CI was finished with the following details:</h2>
-                        <p>Status: ${currentBuild.result}</p>
-                        <p>Console log is attached in this email.</p>
                         <h3>Additional Details:</h3>
                         <ul>
                             <li>Job Name: ${env.JOB_NAME}</li>
                             <li>Build Number: ${env.BUILD_NUMBER}</li>
                             <li>Build URL: ${env.BUILD_URL}</li>
                             <li>Git Branch: ${env.BRANCH_NAME}</li>
-                            <li>Build Timestamp: ${env.BUILD_TIMESTAMP}</li>
-                            <li>Executor Number: ${env.EXECUTOR_NUMBER}</li>
                         </ul>
+                        <p>Console log is attached in this email.</p>
                         <p>Best regards!</p>
                     </body>
                 </html>""",
