@@ -194,15 +194,15 @@ pipelines:
             - docker
             tasks:
             - fetch:
-                pipeline: Config-ap
-                stage: Acceptance
+                pipeline: Acceptance
+                stage: DeployToDev
                 job: deployToDev
                 source: gitHash.txt
                 is_file: true
                 run_if: passed
             - fetch:
-                pipeline: Config-ap
-                stage: Acceptance
+                pipeline: Acceptance
+                stage: DeployToDev
                 job: deployToDev
                 source: docker-compose-ap.yaml
                 is_file: true
