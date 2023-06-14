@@ -25,7 +25,7 @@ describe('Tests for delete questions and options method ', () => {
 
     // Test for method deleteOptions
     test('deleteOptions method generates the correct query', () => {
-        const optionId = 2 + 2;
+        const optionId = 2;
         const expectedQuery = 'DELETE FROM options WHERE IDQuestions = 2;';
         const deleteOptionsQuery = deleteQueries.deleteOptions(optionId);
         expect(deleteOptionsQuery).toEqual(expectedQuery);
