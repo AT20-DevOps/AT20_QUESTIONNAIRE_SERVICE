@@ -141,6 +141,11 @@ pipelines:
             - script: |
                 export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose-ap.yaml up -d 
+            artifacts:
+            - build:
+                source: gitHash.txt
+            - build:
+                source: docker-compose-ap.yaml
     - Smoke:
         fetch_materials: false
         keep_artifacts: false
@@ -171,9 +176,6 @@ pipelines:
       GIT_COMMIT_HASH: 1.2
       TARGET_HOST: 192.168.0.108
     materials:
-      Config-ap:
-        pipeline: Config-ap
-        stage: PackageAndPublish
       Acceptance:
         pipeline: Acceptance
         stage: Smoke
@@ -193,15 +195,15 @@ pipelines:
             tasks:
             - fetch:
                 pipeline: Config-ap
-                stage: Test
-                job: unit-test
+                stage: Acceptance
+                job: deployToDev
                 source: gitHash.txt
                 is_file: true
                 run_if: passed
             - fetch:
                 pipeline: Config-ap
-                stage: PackageAndPublish
-                job: docker
+                stage: Acceptance
+                job: deployToDev
                 source: docker-compose-ap.yaml
                 is_file: true
                 run_if: passed
