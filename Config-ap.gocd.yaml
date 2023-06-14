@@ -16,7 +16,7 @@ pipelines:
         username: Adalid-Perez
         shallow_clone: false
         auto_update: true
-        branch: task-12_AP
+        branch: task-14_AP
         encrypted_password: AES:yv+jiQLZTyJ6AhZPplc+yQ==:YC20C5bVY0+kDA00tjIeDA==
     stages:
     - Test:
@@ -33,6 +33,7 @@ pipelines:
             - ubuntu
             tasks:
             - script: |
+                git rev-parse --short HEAD > gitHash.txt
                 npm install
                 npm test
             artifacts:
@@ -42,6 +43,8 @@ pipelines:
             - build:
                 source: tests/test-results/
                 destination: html_report
+            - build:
+                source: gitHash.txt
             - build:
                 source: docker-compose-ap.yaml 
           code-coverage:
@@ -53,7 +56,7 @@ pipelines:
                 command: ls
                 run_if: passed
     - code-inspection:
-        fetch_materials: true
+        fetch_materials: false
         keep_artifacts: false
         clean_workspace: false
         approval:
@@ -81,12 +84,13 @@ pipelines:
             - docker
             tasks:
             - fetch:
-                is_file: true
-                source: docker-compose-ap.yaml
+                is_file: false
+                source: ./
                 stage: Test
                 job: unit-test
                 run_if: passed
             - script: |
+                export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 docker build -t questionnaire-service .
                 docker login -u adalid21 -p ${DOCKER_PASS}
                 docker tag questionnaire-service adalid21/questionnaire-service:${GIT_COMMIT_HASH}
@@ -122,14 +126,26 @@ pipelines:
             tasks:
             - fetch:
                 pipeline: Config-ap
+                stage: Test
+                job: unit-test
+                source: gitHash.txt
+                is_file: true
+                run_if: passed
+            - fetch:
+                pipeline: Config-ap
                 stage: PackageAndPublish
                 job: docker
                 source: docker-compose-ap.yaml
                 is_file: true
                 run_if: passed
             - script: |
-                echo deploy here
+                export GIT_COMMIT_HASH=$(cat gitHash.txt)
                 export TAG_VERSION=${GIT_COMMIT_HASH} && docker-compose -f docker-compose-ap.yaml up -d 
+            artifacts:
+            - build:
+                source: gitHash.txt
+            - build:
+                source: docker-compose-ap.yaml
     - Smoke:
         fetch_materials: false
         keep_artifacts: false
@@ -145,3 +161,76 @@ pipelines:
             tasks:
             - script: |
                 echo command to run smoke test
+                echo "Smoke test succeeded" > result.txt
+                cat result.txt
+            artifacts:
+            - build: 
+                source: result.txt
+
+  Capacity_testing:
+    group: AT20Group
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    environment_variables:
+      GIT_COMMIT_HASH: 1.2
+      TARGET_HOST: 192.168.0.108
+    materials:
+      Acceptance:
+        pipeline: Acceptance
+        stage: Smoke
+    stages:
+    - DeployToAuto:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          deployToAuto:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - fetch:
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
+                source: gitHash.txt
+                is_file: true
+                run_if: passed
+            - fetch:
+                pipeline: Acceptance
+                stage: DeployToDev
+                job: deployToDev
+                source: docker-compose-ap.yaml
+                is_file: true
+                run_if: passed
+            - fetch:
+                pipeline: Acceptance
+                stage: Smoke
+                job: test
+                source: result.txt
+                is_file: true
+                run_if: passed
+            - script: |
+                export GIT_COMMIT_HASH=$(cat gitHash.txt)
+                export TAG_VERSION=${GIT_COMMIT_HASH} 
+                DOCKER_HOST=ssh://$TARGET_HOST docker-compose -f docker-compose-ap.yaml up -d
+    - CapacityTest:
+        fetch_materials: false
+        keep_artifacts: false
+        clean_workspace: false
+        approval:
+          type: success
+          allow_only_on_success: false
+        jobs:
+          test:
+            timeout: 0
+            resources:
+            - docker
+            tasks:
+            - script: |
+                echo command capacity testing here          
+
