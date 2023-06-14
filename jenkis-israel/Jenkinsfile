@@ -64,8 +64,6 @@ pipeline {
         }
         stage('DeployToDev'){
             steps{
-                sh 'ls -la'
-                sh 'cat docker-compose-israel.yaml'
                 sh 'export TAG_VERSION=${TAG_VERSION} && docker-compose -f docker-compose-israel.yaml up -d'
                 sh 'echo command to run smoke test'
             }
@@ -80,10 +78,30 @@ pipeline {
     }
 
     post{
-        always{
+        always {
             sh 'docker image prune -a -f'
             sh 'docker system prune -a -f'
+            emailext(
+                subject: "Jenkins Result - ${BRANCH_NAME} branch - ${currentBuild.result}",
+                body: """<html>
+                    <body>
+                        <h3>Additional Details:</h3>
+                        <ul>
+                            <li>Job Name: ${env.JOB_NAME}</li>
+                            <li>Build Number: ${env.BUILD_NUMBER}</li>
+                            <li>Build URL: ${env.BUILD_URL}</li>
+                            <li>Git Branch: ${env.BRANCH_NAME}</li>
+                        </ul>
+                        <p>Console log is attached in this email.</p>
+                        <p>Best regards!</p>
+                    </body>
+                </html>""",
+                mimeType: 'text/html',
+                to: 'izg.elt@gmail.com',
+                attachLog: true
+            )
         }
+
     }
 
 }
